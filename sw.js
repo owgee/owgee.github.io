@@ -3,7 +3,7 @@
 
 var CACHE_VERSION = 1;
 var CURRENT_CACHES = {
-    font: 'cc-sw' + CACHE_VERSION
+    all: 'cc-sw' + CACHE_VERSION
 };
 
 self.addEventListener('install', function(e) {
@@ -14,7 +14,8 @@ self.addEventListener('install', function(e) {
                 'img/',
                 'css/',
                 'js/',
-                'vendor/'
+                'vendor/',
+                'https://free.currencyconverterapi.com/api/v5/convert?q=${query}&compact=y'
             ]);
         })
     );
@@ -49,8 +50,8 @@ self.addEventListener('fetch', function(event) {
 
     event.respondWith(
 
-        // Opens Cache objects that start with 'cc'.
-        caches.open(CURRENT_CACHES['cc']).then(function(cache) {
+        // Open All Cache objects that start with 'all'.
+        caches.open(CURRENT_CACHES['all']).then(function(cache) {
             return cache.match(event.request).then(function(response) {
                 if (response) {
                     console.log('Found response in cache:', response);
@@ -75,6 +76,8 @@ self.addEventListener('fetch', function(event) {
         })
     );
 });
+
+
 
 
 
