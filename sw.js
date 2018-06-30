@@ -1,30 +1,12 @@
-// Install the Service Worker
+// Install the Service Worker AND Activate it using the activate method
 // Shorthand identifier mapped to specific versioned cache.
 
-var CACHE_VERSION = 1;
+var CACHE_VERSION = 2;
 var CURRENT_CACHES = {
     all: 'cc-sw' + CACHE_VERSION
 };
 
-self.addEventListener('install', function(e) {
-    e.waitUntil(
-        caches.open('cc-sw').then(function(cache) {
-            return cache.addAll([
-                'index.html',
-                'img/',
-                'css/',
-                'js/',
-                'vendor/',
-                'https://free.currencyconverterapi.com/api/v5/convert?q=${query}&compact=y'
-            ]);
-        })
-    );
-});
-
-
-
-
-
+//
 self.addEventListener('activate', function(event) {
     var expectedCacheNames = Object.values(CURRENT_CACHES);
 
@@ -50,7 +32,7 @@ self.addEventListener('fetch', function(event) {
 
     event.respondWith(
 
-        // Open All Cache objects that start with 'all'.
+        // Open All Cache objects that start with 'cc'.
         caches.open(CURRENT_CACHES['all']).then(function(cache) {
             return cache.match(event.request).then(function(response) {
                 if (response) {
