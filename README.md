@@ -5,7 +5,7 @@
 
 ## Preview
 
-[![Currency Converter Preview](http://localhost/currencyConverter/img/preview.png)](http://localhost/currencyConverter/)
+[![Currency Converter Preview](https://owgee.github.io/img/preview.png)](http://owgee.github.io/)
 
 **[View Live Preview](https://owgee.github.io/)**
 
