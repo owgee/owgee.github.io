@@ -190,7 +190,8 @@
 
         })
         .catch(err =>{
-
+                alert('Sorry, you needed to perform this conversion while online first, then you can do it with no internet :-)');
+                $('#loader').addClass('text-hide');
                 console.log('Request failed', err)
         });
         };
