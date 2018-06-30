@@ -50,8 +50,7 @@
     <div class="form-group col-md-2">
       
       <select id="inputFrom" class="form-control">
-        <option selected>USD</option>
-        <option>...</option>
+
       </select>
     </div>
             <div class="form-group ">
@@ -60,12 +59,11 @@
     <div class="form-group col-md-2">
       
       <select id="inputTo" class="form-control">
-        <option selected>TZS</option>
-        <option>...</option>
+
       </select>
     </div>
     <div class="form-group col-md-3">
-      <a class="btn btn-success btn-block text-white" id="convert" onclick="convertCurrency()" >CONVERT</a>
+      <a class="btn btn-success btn-block text-white" id="convert" onclick="convertCurrency()" >CONVERT <i id="loader" class="fa fa-spinner fa-spin text-hide pull-right"></i></a>
     </div>
     <div class="form-group col-md-2">
       
@@ -78,50 +76,6 @@
 
    
 
-
-    <!-- Footer -->
-    <!--<footer class="footer text-center">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-4 mb-5 mb-lg-0">
-            <h4 class="text-uppercase mb-4">Where?</h4>
-            <p class="lead mb-0">Block 11, Bima Road
-              <br>Mikocheni B, Dar es Salaam</p>
-          </div>
-          <div class="col-md-4 mb-5 mb-lg-0">
-            <h4 class="text-uppercase mb-4">Be Social</h4>
-            <ul class="list-inline mb-0">
-              <li class="list-inline-item">
-                <a class="btn btn-outline-light btn-social text-center rounded-circle" href="#">
-                  <i class="fa fa-fw fa-facebook"></i>
-                </a>
-              </li>
-              <li class="list-inline-item">
-                <a class="btn btn-outline-light btn-social text-center rounded-circle" href="#">
-                  <i class="fa fa-fw fa-github"></i>
-                </a>
-              </li>
-              <li class="list-inline-item">
-                <a class="btn btn-outline-light btn-social text-center rounded-circle" href="#">
-                  <i class="fa fa-fw fa-twitter"></i>
-                </a>
-              </li>
-              <li class="list-inline-item">
-                <a class="btn btn-outline-light btn-social text-center rounded-circle" href="#">
-                  <i class="fa fa-fw fa-linkedin"></i>
-                </a>
-              </li>
-            
-            </ul>
-          </div>
-          <div class="col-md-4">
-            <h4 class="text-uppercase mb-4">About CC</h4>
-            <p class="lead mb-0">Currency Converter is an offline first Calculator created by
-              <a href="https://github.com/owgee">Owgee</a>.</p>
-          </div>
-        </div>
-      </div>
-    </footer>-->
 
     <div class="copyright py-4 text-center text-white">
       <div class="container">
@@ -173,38 +127,70 @@
             console.log('Service worker registration failed:', error);
         });
 
+        $(function() {
 
+            fetch('https://free.currencyconverterapi.com/api/v5/currencies')
+                .then(res => res.json())
+            .then( data => {
+                let arr = ' <select name="" id="inputTo" class="form-control" >';
+            for (let key in data.results) {
+                console.log(data.results[`${key}`]);
+                arr += '<option value="' + data.results[`${key}`].id + '"> ' + data.results[`${key}`].currencyName+' ('+data.results[`${key}`].id+')</option>'
+            }
+            arr += '</select>';
+            document.getElementById('inputFrom').innerHTML = arr;
+            document.getElementById('inputTo').innerHTML = arr;
+        }).catch(err => console.log(err));
+
+        });
 
         function convertCurrency(){
-
+            $('#loader').removeClass('text-hide');
             let fromCurrency = $("#inputFrom").val();
             let toCurrency = $("#inputTo").val();
             let amount = $("#inputAmount").val();
             let result = $("#inputResult");
 
-            //let query = `${fromCurrency}_${toCurrency},${toCurrency}_${fromCurrency}`;
+
             let query = `${fromCurrency}_${toCurrency}`;
             let url = `https://free.currencyconverterapi.com/api/v5/convert?q=${query}&compact=y`;
 
-            fetch(url)
-                .then((response) => {
+
+
+            fetch(url).then((response) => {
                return response.json()
         }).then((data) => {
 
+                //get conversion rate
                 let value = data[query].val;
             console.log("RETURNED VALUE: "+value);
 
             if (value != undefined) {
-                let total = parseFloat(value) * parseFloat(amount);
-                result.val(total);
-                console.log("RESULTS TOTAL: "+total);
+                let converted = parseFloat(value) * parseFloat(amount);
+
+                //Update converted if and only if it is not null
+                if(!Number.isNaN(converted)){
+                    result.val(converted);
+                    console.log("RESULTS TOTAL: "+converted);
+                    $('#loader').addClass('text-hide');
+                }else{
+
+                    //apply default value if input not entered
+                    result.val(value);
+                    $("#inputAmount").val("1");
+                    $('#loader').addClass('text-hide');
+
+                }
+
+
             } else {
-                var err = new Error("Value not found for " + query);
+                var err = new Error("Value for " + query + "can\'t be found");
                 console.log(err);
             }
 
         })
         .catch(err =>{
+
                 console.log('Request failed', err)
         });
         };

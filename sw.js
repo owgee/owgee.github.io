@@ -1,7 +1,7 @@
 // Install the Service Worker AND Activate it using the activate method
 // Shorthand identifier mapped to specific versioned cache.
 
-var CACHE_VERSION = 2;
+var CACHE_VERSION = 1;
 var CURRENT_CACHES = {
     all: 'cc-sw' + CACHE_VERSION
 };
