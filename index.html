@@ -1,27 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<style type="text/css">
-	
-
-.pt-4, .py-4 {
-    
-    bottom: 0px;
-    position: fixed;
-    width: 100%;
-}
-header.masthead h2 {
-  font-size: 1.3rem !important;
-  font-family: monospace !important;
-}
-</style>
   <head>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="An offline currency converter">
     <meta name="author" content="Owden Godson - Owgee">
-
+    <meta name="theme-color" content="#18bc9c">
     <title>Currency Converter</title>
 
     <!-- Bootstrap core CSS -->
@@ -34,7 +19,7 @@ header.masthead h2 {
 
  
     <!-- Custom styles -->
-    <link href="css/cconverter.min.css" rel="stylesheet">
+    --<link href="css/cconverter.min.css" rel="stylesheet">
 
   </head>
 
@@ -80,11 +65,11 @@ header.masthead h2 {
       </select>
     </div>
     <div class="form-group col-md-3">
-      <a class="btn btn-success btn-block text-white" >CONVERT</a>
+      <a class="btn btn-success btn-block text-white" id="convert" onclick="convertCurrency()" >CONVERT</a>
     </div>
     <div class="form-group col-md-2">
       
-      <input type="text" disabled class="form-control" id="inputAnswer">
+      <input type="text" disabled class="form-control" id="inputResult">
     </div>
   </div>
     	</form>
@@ -164,18 +149,67 @@ header.masthead h2 {
   </body>
 
 </html>
+
+<style type="text/css">
+
+  .pt-4, .py-4 {
+
+    bottom: 0px;
+    position: fixed;
+    width: 100%;
+  }
+  header.masthead h2 {
+    font-size: 1.3rem !important;
+    font-family: monospace !important;
+  }
+</style>
 <script>
-    if ('serviceWorker' in navigator) {
-        // Register a service worker hosted at the root of the
-        // site using a more restrictive scope.
-        console.log('Service worker registration starting...');
+
+        if(navigator.serviceWorker)
+        // Register a service worker hosted at the root of the site
         navigator.serviceWorker.register('sw.js', {scope: './'}).then(function(registration) {
             console.log('Service worker registration succeeded:', registration);
         }).catch(function(error) {
             console.log('Service worker registration failed:', error);
         });
-    } else {
-        console.log('Service workers are not supported.');
-    }
+
+
+
+
+        function convertCurrency(){
+
+            let fromCurrency = $("#inputFrom").value;
+            let toCurrency = $("#inputTo").value;
+            let amount = $("#inputAmount").value;
+            let result = $("#inputResult");
+            console.log("Amount: "+ amount+" From: "+ fromCurrency+ "To: "+toCurrency)
+
+            //let query = `${fromCurrency}_${toCurrency},${toCurrency}_${fromCurrency}`;
+            let query = `${fromCurrency}_${toCurrency}`;
+            let url = `https://free.currencyconverterapi.com/api/v5/convert?q=${query}&compact=y`;
+
+            fetch(url)
+                .then((response) => {
+                response.json()
+        }).then((data) => {
+
+                let value = data[query].val;
+            console.log(value);
+
+            if (value != undefined) {
+                let total = parseFloat(value) * parseFloat(amount);
+                result.innerHTML = total;
+                console.log(result);
+            } else {
+                var err = new Error("Value not found for " + query);
+                console.log(err);
+            }
+
+        })
+        .catch(err =>{
+                console.log('Request failed', err)
+        });
+        };
+
 
 </script>
