@@ -98,6 +98,9 @@
   <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
     <!-- Custom scripts for this template -->
+
+    <script src="js/idb.js"></script>
+  <script src="js/offlineIdbObjects.js"></script>
     <script src="js/cconverter.js"></script>
 
   </body>
@@ -133,13 +136,18 @@
                 .then(res => res.json())
             .then( data => {
                 let arr = ' <select name="" id="inputTo" class="form-control" >';
+                let array = [];
             for (let key in data.results) {
                 console.log(data.results[`${key}`]);
                 arr += '<option value="' + data.results[`${key}`].id + '"> ' + data.results[`${key}`].currencyName+' ('+data.results[`${key}`].id+')</option>'
+                array.push(data.results[`${key}`].id );
+
             }
             arr += '</select>';
             document.getElementById('inputFrom').innerHTML = arr;
             document.getElementById('inputTo').innerHTML = arr;
+
+            console.log("ARRAY: "+array);
         }).catch(err => console.log(err));
 
         });
@@ -155,15 +163,15 @@
             let query = `${fromCurrency}_${toCurrency}`;
             let url = `https://free.currencyconverterapi.com/api/v5/convert?q=${query}&compact=y`;
 
-
-
             fetch(url).then((response) => {
                return response.json()
         }).then((data) => {
 
+
                 //get conversion rate
                 let value = data[query].val;
             console.log("RETURNED VALUE: "+value);
+            idbKeyval.set(query,value); //set conversion rates in the indexDB
 
             if (value != undefined) {
                 let converted = parseFloat(value) * parseFloat(amount);
@@ -171,7 +179,7 @@
                 //Update converted if and only if it is not null
                 if(!Number.isNaN(converted)){
                     result.val(converted);
-                    console.log("RESULTS TOTAL: "+converted);
+                    console.log("RESULTS : "+converted);
                     $('#loader').addClass('text-hide');
                 }else{
 
@@ -190,8 +198,40 @@
 
         })
         .catch(err =>{
+
+                $('#loader').addClass('text-hide'); //keyValStore.get('foo').then(val => console.log(val));
+
+
+            idbKeyval.get(query).then(val => {
+                let conversion = val;
+                console.log("CONVERSION: "+conversion);
+            if(Number.isNaN(conversion)){
                 alert('Sorry, you needed to perform this conversion while online first, then you can do it with no internet :-)');
+                //apply default value if input not entered
+                result.val(value);
+                $("#inputAmount").val("1");
                 $('#loader').addClass('text-hide');
+            }else{
+                //w
+                //Update converted if and only if it is not null
+                   let converted = parseFloat(conversion) * parseFloat(amount);
+                if(!Number.isNaN(converted)){ //if the amount is chosen, else, put default value
+                    result.val(converted);
+                    console.log("RESULTS : "+conversion);
+                }else{
+
+                    if(Number.isNaN(conversion)){
+                        alert('Sorry, you needed to perform this conversion while online first, then you can do it with no internet :-)');
+                        conversion = 0
+                    }
+                    $("#inputAmount").val("1");
+                    converted = parseFloat(conversion) * parseFloat(1);
+                    result.val(converted);
+                }
+                    $('#loader').addClass('text-hide');
+            }
+            });
+
                 console.log('Request failed', err)
         });
         };

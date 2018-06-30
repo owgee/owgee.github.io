@@ -1,3 +1,4 @@
+//ES6 Compliant
 (($ => {
     // Smooth scrolling using jQuery easing
     $('a.js-scroll-trigger[href*="#"]:not([href="#"])').click(function() {
@@ -41,4 +42,9 @@ $(() => {
     $(this).removeClass("floating-label-form-group-with-focus");
 });
 });
-}))(jQuery); // End of use strict
+}))(jQuery);
+
+
+
+
+

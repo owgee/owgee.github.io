@@ -1,6 +1,6 @@
 // Install the Service Worker AND Activate it using the activate method
 
-var CACHE_VERSION = 2;
+var CACHE_VERSION = 3;
 var ACTIVE_CACHES = {
     all: 'cc-sw' + CACHE_VERSION
 };
