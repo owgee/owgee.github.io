@@ -7,7 +7,7 @@ self.addEventListener('install', function(event) {
         caches.open('cc-sw').then(function(cache) {
             // And add resources to it
             return cache.addAll([
-                './',
+                '/',
                 'js/',
                 'vendor/',
                 'img/',
