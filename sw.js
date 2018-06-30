@@ -20,6 +20,7 @@ self.addEventListener('install', function(event) {
 
 self.addEventListener('fetch', function(event) {
 
+    console.log(event.request);
     event.respondWith(
         //If there's a request in the caches that matches
         caches.match(event.request).then(function(response) {
