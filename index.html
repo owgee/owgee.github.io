@@ -60,12 +60,12 @@
     <div class="form-group col-md-2">
       
       <select id="inputTo" class="form-control">
-        <option selected>TZ</option>
+        <option selected>TZS</option>
         <option>...</option>
       </select>
     </div>
     <div class="form-group col-md-3">
-      <a class="btn btn-success btn-block text-white" id="convert" onclick="convertCurrency()" >CONVERT</a>
+      <a class="btn btn-success btn-block text-white" id="convert" onclick="" >CONVERT</a>
     </div>
     <div class="form-group col-md-2">
       
@@ -173,43 +173,6 @@
             console.log('Service worker registration failed:', error);
         });
 
-
-
-
-        function convertCurrency(){
-
-            let fromCurrency = $("#inputFrom").value;
-            let toCurrency = $("#inputTo").value;
-            let amount = $("#inputAmount").value;
-            let result = $("#inputResult");
-            console.log("Amount: "+ amount+" From: "+ fromCurrency+ "To: "+toCurrency)
-
-            //let query = `${fromCurrency}_${toCurrency},${toCurrency}_${fromCurrency}`;
-            let query = `${fromCurrency}_${toCurrency}`;
-            let url = `https://free.currencyconverterapi.com/api/v5/convert?q=${query}&compact=y`;
-
-            fetch(url)
-                .then((response) => {
-                response.json()
-        }).then((data) => {
-
-                let value = data[query].val;
-            console.log(value);
-
-            if (value != undefined) {
-                let total = parseFloat(value) * parseFloat(amount);
-                result.innerHTML = total;
-                console.log(result);
-            } else {
-                var err = new Error("Value not found for " + query);
-                console.log(err);
-            }
-
-        })
-        .catch(err =>{
-                console.log('Request failed', err)
-        });
-        };
 
 
 </script>
