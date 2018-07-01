@@ -20,7 +20,6 @@
  
     <!-- Custom styles -->
     <link href="css/cconverter.min.css" rel="stylesheet">
-    <link href="css/select2.min.css" rel="stylesheet">
 
   </head>
 
@@ -57,7 +56,7 @@
             <div class="form-group ">
                 <label class="label col-form-label text-grey">TO</label>
             </div>
-    <div class="form-group col-md-2">
+    <div class="form-group col-md-2 ">
       
       <select id="inputTo" class="form-control select2">
 
@@ -93,7 +92,6 @@
 
     <!-- Bootstrap core JavaScript -->
     <script src="vendor/jquery/jquery.min.js"></script>
-  <script src="js/select2.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
 
@@ -156,7 +154,7 @@
            // console.log("ARRAY: "+array);
         }).catch(err => console.log(err));
 
-            $('.select2').select2();
+           // $('.select2').select2();
         });
 
         function convertCurrency(){
@@ -185,7 +183,7 @@
 
                 //Update converted if and only if it is not null
                 if(!Number.isNaN(converted)){
-                    result.val(converted);
+                    result.val(converted.toFixed(4)+" "+toCurrency);
                     console.log("RESULTS : "+converted);
                     $('#loader').addClass('text-hide');
                 }else{
@@ -206,36 +204,30 @@
         })
         .catch(err =>{
 
-                $('#loader').addClass('text-hide'); //keyValStore.get('foo').then(val => console.log(val));
+            $('#loader').addClass('text-hide'); //keyValStore.get('foo').then(val => console.log(val));
 
 
             idbKeyval.get(query).then(val => {
                 let conversion = val;
-                console.log("CONVERSION 1: "+conversion);
-            if(Number.isNaN(conversion)){
+            console.log("conv : "+conversion);
+            if(!conversion){
                 alert('Sorry, you needed to perform this conversion while online first, then you can do it with no internet :-)');
                 //apply default value if input not entered
-                result.val(value);
-                $("#inputAmount").val("1");
+                result.val(value.toFixed(4)+" "+toCurrency);
+                $("#inputAmount").val("Undefined");
                 $('#loader').addClass('text-hide');
             }else{
                 //w
                 //Update converted if and only if it is not null
                    let converted = parseFloat(conversion) * parseFloat(amount);
                 if(!Number.isNaN(converted)){ //if the amount is chosen, else, put default value
-                    result.val(converted);
+                    result.val(converted.toFixed(4)+" "+toCurrency);
                     console.log("RESULTS : "+conversion);
                 }else{
-                    console.log("CONVERSION 2: "+conversion===undefined);
-                    if(Number.isNaN(conversion)){
-                        alert('Sorry, you needed to perform this conversion while online first, then you can do it with no internet :-)');
-                        conversion = 0
-                    }else{
 
-                    }
                     $("#inputAmount").val("1");
                     converted = parseFloat(conversion) * parseFloat(1);
-                    result.val(converted);
+                    result.val(converted.toFixed(4)+" "+toCurrency);
                 }
                     $('#loader').addClass('text-hide');
             }
