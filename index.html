@@ -19,7 +19,8 @@
 
  
     <!-- Custom styles -->
-    --<link href="css/cconverter.min.css" rel="stylesheet">
+    <link href="css/cconverter.min.css" rel="stylesheet">
+    <link href="css/select2.min.css" rel="stylesheet">
 
   </head>
 
@@ -49,7 +50,7 @@
     </div>
     <div class="form-group col-md-2">
       
-      <select id="inputFrom" class="form-control">
+      <select id="inputFrom" class="form-control select2">
 
       </select>
     </div>
@@ -58,7 +59,7 @@
             </div>
     <div class="form-group col-md-2">
       
-      <select id="inputTo" class="form-control">
+      <select id="inputTo" class="form-control select2">
 
       </select>
     </div>
@@ -92,7 +93,9 @@
 
     <!-- Bootstrap core JavaScript -->
     <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="js/select2.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
 
 
   <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
@@ -102,6 +105,7 @@
     <script src="js/idb.js"></script>
   <script src="js/offlineIdbObjects.js"></script>
     <script src="js/cconverter.js"></script>
+
 
   </body>
 
@@ -119,6 +123,8 @@
     font-size: 1.3rem !important;
     font-family: monospace !important;
   }
+
+
 </style>
 <script>
 
@@ -147,9 +153,10 @@
             document.getElementById('inputFrom').innerHTML = arr;
             document.getElementById('inputTo').innerHTML = arr;
 
-            console.log("ARRAY: "+array);
+           // console.log("ARRAY: "+array);
         }).catch(err => console.log(err));
 
+            $('.select2').select2();
         });
 
         function convertCurrency(){
@@ -204,7 +211,7 @@
 
             idbKeyval.get(query).then(val => {
                 let conversion = val;
-                console.log("CONVERSION: "+conversion);
+                console.log("CONVERSION 1: "+conversion);
             if(Number.isNaN(conversion)){
                 alert('Sorry, you needed to perform this conversion while online first, then you can do it with no internet :-)');
                 //apply default value if input not entered
@@ -219,10 +226,12 @@
                     result.val(converted);
                     console.log("RESULTS : "+conversion);
                 }else{
-
+                    console.log("CONVERSION 2: "+conversion===undefined);
                     if(Number.isNaN(conversion)){
                         alert('Sorry, you needed to perform this conversion while online first, then you can do it with no internet :-)');
                         conversion = 0
+                    }else{
+
                     }
                     $("#inputAmount").val("1");
                     converted = parseFloat(conversion) * parseFloat(1);
@@ -238,3 +247,5 @@
 
 
 </script>
+
+
